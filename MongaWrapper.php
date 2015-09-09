@@ -1,8 +1,10 @@
 <?php
 
-namespace Monga;
+namespace FuelMonga;
 
-class Monga
+use \League\Monga;
+
+class MongaWrapper
 {
 	protected static $_defaults;
 	protected static $_instance;
