@@ -1,3 +1,0 @@
-[submodule "classes/Monga"]
-	path = classes/Monga
-	url = https://github.com/thephpleague/monga.git

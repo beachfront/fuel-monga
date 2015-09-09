@@ -1,0 +1,23 @@
+{
+    "name": "beachfront/bfmphp",
+    "description": "Beachfront Media FuelPHP Monga Wrapper",
+    "homepage": "http://beachfront.github.io/bfmphp",
+    "type": "module",
+    "authors": [
+        {
+            "name": "Beachfront Media",
+            "homepage": "http://www.beachfrontmedia.com/"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "league/monga": "1.1.0"
+    },
+    "recommend": {
+        "ext-zip": "*",
+        "ext-gd2": "*"
+    },
+    "autoload": {
+        "psr-4": { "BfmPHP\\": "src/" }
+    }
+}
