@@ -6,36 +6,50 @@ use \League\Monga;
 
 class FuelMonga
 {
-	protected static $_defaults;
 	protected static $_instance;
-	protected static $_defaultMongoClient;
+	protected static $_defaultDSN;
+	protected static $_defaultOptions;
 
+	/**
+	 * Initializes the default dsn and option values from the predefined configuration values.
+	 *
+	 * @throws \FuelException
+	 */
 	public static function _init()
 	{
 		\Config::load('db', true);
-		$mongo_config = \Config::get('db.monga.default');
-		static::mongoClient($mongo_config);
+		$config = \Config::get('db.monga');
+		static::setup_default($config);
 	}
 
 	/**
-	 * Forge
+	 * Returns the instance of the Monga connection. If no instance of the instance is set then we create that instance,
+	 * based off of the given values. If the user sends in an array with the dsn value set or the options value set then
+	 * the instance will be recreated with the given config values.
 	 *
 	 * @param	array			$config		extra config array
+	 * @return mixed
 	 */
 	public static function forge($config = array())
 	{
-		if (!isset(static::$_instance))
-		{
-			static::_init();
-			if (!isset($config['options']))
-			{
-				$config['options'] = [];
+		if (!isset(static::$_instance) || (array_key_exists("dsn", $config) || array_key_exists("options", $config))) {
+
+			if (!isset(static::$_defaultDSN) || !isset(static::$_defaultOptions)) {
+				static::_init();
 			}
-			if (!isset($config['server']))
-			{
-				$config['server'] = static::mongoClient();
+
+			$dsn = static::$_defaultDSN;
+			$options = static::$_defaultOptions;
+
+			if (isset($config['options'])) {
+				$options = $config['options'];
 			}
-			static::$_instance = Monga::connection($config['server'], $config['options']);
+
+			if (isset($config['dsn'])) {
+				$dsn = $config['dsn'];
+			}
+
+			static::$_instance = Monga::connection($dsn, $options);
 		}
 		return static::$_instance;
 	}
@@ -47,44 +61,24 @@ class FuelMonga
 	 */
 	public static function instance()
 	{
-		if (!isset(self::$_instance))
-		{
+		if (!isset(self::$_instance)) {
 			static::forge();
 		}
-		return static::$instance;
+
+		return static::$_instance;
 	}
 
 	/**
-	 * Creates the mongo client from your current configurations stored in fuelphp, if the mongo client has already
-	 * been created it simply returns the current client.
-	 *
-	 * @return \MongoClient
+	 * Defines the default values for the dsn and options assocaited with Monga.
 	 */
-	protected static function mongoClient($config = array())
+	protected static function setup_default($config)
 	{
-		if (!isset(static::$_defaultMongoClient))
-		{
-			$mongo_config = $config;
-			$mongo_client_string = 'mongodb://';
-
-			foreach ($mongo_config['connections'] as $index => $connection)
-			{
-				if ($index > 0)
-				{
-					$mongo_client_string .= ',';
-				}
-
-				if (isset($connection['username']) && isset($connection['password']))
-				{
-					$mongo_client_string .= $connection['username'] . '@' . $connection['password'];
-				}
-
-				$mongo_client_string .= $connection['dsn'];
-			}
-
-			static::$_defaultMongoClient = new \MongoClient($mongo_client_string);
+		if (!isset(static::$_defaultDSN) && array_key_exists('dsn', $config)) {
+			static::$_defaultDSN = $config['dsn'];
 		}
 
-		return static::$_defaultMongoClient;
+		if (!isset(static::$defaultOptions) && array_key_exists('options', $config)) {
+			static::$_defaultOptions = $config['options'];
+		}
 	}
 }
