@@ -38,7 +38,7 @@ To include the wrapper in your composer file add the repo directory into your re
 
 
 
-To properly use the Monga Wrapper import/alias with the use operator and simply forge 
+To properly use the Monga wrapper import/alias with the use operator and simply forge FuelMonga.
 
 
 ```php
@@ -46,12 +46,30 @@ To properly use the Monga Wrapper import/alias with the use operator and simply 
 
 use \FuelMonga\FuelMonga;
 
-$connection = FuelMonga::forge([
-	"server" => new \MongoClient('mongodb://mongodb0.example.com:27017'),
-	"options" => array()
-]);
+// Get a connection
+$connection = FuelMonga::forge();
+
+// Get the database
+$database = $connection->database('db_name');
+
+// Get a collection ...
 
 ``` 
+
+If you want to go and change your dsn or option values for your connection you can simply reforge with those values.
+
+```php
+...
+
+$connection = FuelMonga::forge(array(
+		'dsn' => 'mongodb://mongo1.example.com:27017',
+		"options" => array(
+			"connectTimeoutMS" => 5000,
+			"replicaSet" => "rs",
+			"readPreference" => \MongoClient::RP_SECONDARY_PREFERRED
+		)));
+
+```
 
 In the app/config folder of FuelPHP create a db.php file that contains your DSN and all of your options for your Monga Connection.
 
