@@ -21,7 +21,7 @@ class MongaWrapper
 			{
 				$config['options'] = [];
 			}
-			static::$_instance = new \League\Monga($config['server'], $config['options']);
+			static::$_instance = new \Monga($config['server'], $config['options']);
 		}
 		return static::$_instance;
 	}

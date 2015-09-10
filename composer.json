@@ -18,6 +18,6 @@
         "ext-gd2": "*"
     },
     "autoload": {
-        "psr-4": { "FuelMonga\\": "FuelMonga" }
+        "psr-4": { "FuelMonga\\": "src/" }
     }
 }
