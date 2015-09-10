@@ -15,13 +15,13 @@ class MongaWrapper
 	 */
 	public static function forge($config = array())
 	{
-		if (!isset(static::$_instannce))
+		if (!isset(static::$_instance))
 		{
 			if (!isset($config['options']))
 			{
 				$config['options'] = [];
 			}
-			static::$_instance = new \Monga($config['server'], $config['options']);
+			static::$_instance = Monga::connection($config['server'], $config['options']);
 		}
 		return static::$_instance;
 	}
